@@ -7,6 +7,19 @@
 <body
 
 <?php 
+// File to store the text
+$file = "notes.txt";
+
+// If form is submitted, save content
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["editor"]) ) {
+    $content = $_POST["editor"];
+    file_put_contents($file, $content);
+}
+
+// Load existing content
+$text = file_exists($file) ? file_get_contents($file) : "";
+
+
 function getServerUptime() {
 $input = shell_exec('uptime');
 
@@ -27,6 +40,10 @@ return $output;
 	<h1>Under construction</h1>
 	<p><img src="/assets/images/under_construction.gif" alt="Under construction image"></p>
 	<p>You are connected from: <?php echo $_SERVER['REMOTE_ADDR'] ?> <a href="https://speedtest.volia.com/"> Check your internet speed</a></p>
+	<form method="post">
+        <textarea name="editor"><?php echo htmlspecialchars($text); ?></textarea><br>
+        <input type="submit" value="Leave your message">
+    </form>
 </div>
 
 <footer>
