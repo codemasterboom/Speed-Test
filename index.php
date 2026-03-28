@@ -2,7 +2,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" href="/assets/css/styles.css">
+	<link rel="stylesheet" href="./assets/css/styles.css">
 </head>
 <body
 
@@ -21,24 +21,45 @@ $text = file_exists($file) ? file_get_contents($file) : "";
 
 
 function getServerUptime() {
-$input = shell_exec('uptime');
+        $uptime = "Uptime not found.";
+        if (PHP_OS == "WINNT") {
+            // Windows: Use WMIC to get uptime in seconds
+            $output = shell_exec('powershell "Get-CimInstance Win32_OperatingSystem | Select-Object LastBootUpTime"');
+            if ($output) {
+                preg_match('/(\d{2}\.\d{2}\.\d{4} \d{2}:\d{2}:\d{2})/', $output, $matches);
+                if (!empty($matches[1])) {
+                    // Example output: 13.03.2026 23:56:17
+                    $bootTime = DateTime::createFromFormat('d.m.Y H:i:s', $matches[1]);
+                    if ($bootTime !== false) {
+                        $now = new DateTime();
+                        $uptimeseconds = $now->getTimestamp() - $bootTime->getTimestamp();
+                        $uptime = gmdate("H:i:s", $uptimeseconds);
+                    } else {
+                        $uptime = "Uptime parse failed.";
+                    }
+                }
+            }
+        } else {
+            // Linux/Unix: Use uptime command
+            $input = shell_exec('uptime');
 
-// Pattern looks for "up " followed by digits:digits
-$pattern = '/up\s+(.*?),\s+load/';
-if (preg_match($pattern, $input, $matches)) {
-    // $matches[0] is the full match "up 19:53"
-    // $matches[1] is the first capture group "19:53"
-    $output = $matches[1];
-} else {
-    $output = "Uptime not found.";
-}
-return $output;
+            // Pattern looks for "up " followed by digits:digits
+            $pattern = '/up\s+(.*?),\s+load/';
+            if (preg_match($pattern, $input, $matches)) {
+                // $matches[0] is the full match "up 19:53"
+                // $matches[1] is the first capture group "19:53"
+                $uptime = $matches[1];
+            } else {
+                $uptime = "Uptime not found.";
+            }
+        }
+        return $uptime;
 }
 ?>
 
 <div class="center-text">
 	<h1>Under construction</h1>
-	<p><img src="/assets/images/under_construction.gif" alt="Under construction image"></p>
+	<p><img src="./assets/images/under_construction.gif" alt="Under construction image"></p>
 	<p>You are connected from: <?php echo $_SERVER['REMOTE_ADDR'] ?> <a href="https://speedtest.volia.com/"> Check your internet speed</a></p>
 	<form method="post">
         <textarea name="editor"><?php echo htmlspecialchars($text); ?></textarea><br>
