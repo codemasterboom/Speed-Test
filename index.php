@@ -4,7 +4,8 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="./assets/css/styles.css">
 </head>
-<body
+<body>
+
 
 <?php 
 // File to store the text
@@ -60,10 +61,13 @@ function getServerUptime() {
 <div class="center-text">
 	<h1>Under construction</h1>
 	<p><img src="./assets/images/under_construction.gif" alt="Under construction image"></p>
-	<p>You are connected from: <?php echo $_SERVER['REMOTE_ADDR'] ?> <a href="https://speedtest.volia.com/"> Check your internet speed</a></p>
+</div>
+
+ <div class="task-card">
+    <h2>You are connected from: <?php echo $_SERVER['REMOTE_ADDR'] ?></h2>
 	<form method="post">
-        <textarea name="editor"><?php echo htmlspecialchars($text); ?></textarea><br>
-        <input type="submit" value="Leave your message">
+        <p><textarea name="editor"><?php echo htmlspecialchars($text); ?></textarea></p>
+        <button type="submit">Leave your message</button>
     </form>
 </div>
 
